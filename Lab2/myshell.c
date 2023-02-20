@@ -2,21 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 
-#define MAX_INPUT 1024
+#define MAX_COMMAND_INPUT 1024
 
 // Internal command functions
 void cd(char *directory);
 void clr();
+void dir(char *directory);
 
 int main() {
-  char input[MAX_INPUT];
-  char *args[MAX_INPUT];
+  char input[MAX_COMMAND_INPUT];
+  char *args[MAX_COMMAND_INPUT];
   int num_args;
 
   while (1) {
     printf("myshell> ");
-    if (fgets(input, MAX_INPUT, stdin) == NULL) {
+    if (fgets(input, MAX_COMMAND_INPUT, stdin) == NULL) {
       printf("\n");
       break;
     }
@@ -47,6 +49,17 @@ int main() {
       // Clear screen command
       clr();
     }
+    else if (strcmp(args[0], "dir") == 0) {
+      // List directory command
+      if (num_args == 1) {
+        // List contents of current directory
+        dir(getcwd(NULL, 0));
+      }
+      else {
+        // List contents of specified directory
+        dir(args[1]);
+      }
+    }
     else {
       // External command, not implemented
       printf("Command not implemented.\n");
@@ -70,3 +83,18 @@ void cd(char *directory) {
 void clr() {
   printf("\033[2J\033[1;1H");
 }
+
+void dir(char *directory){
+  DIR *dir = opendir(directory);
+  if(dir == NULL) {
+    printf("Directory not found.\n");
+  }
+  else {
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+      printf("%s\n", entry->d_name);
+    }
+    closedir(dir);
+  }
+}
+
