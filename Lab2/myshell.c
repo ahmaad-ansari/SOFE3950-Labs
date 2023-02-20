@@ -15,6 +15,8 @@ void dir(char *directory);
 void env();
 void echo(char *comment);
 void manual();
+void pause_shell();
+void quit_shell();
 
 int main() {
   char input[MAX_COMMAND_INPUT];
