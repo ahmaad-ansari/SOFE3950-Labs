@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/wait.h>
 
 extern char **environ; // Declare the environment variable
 
@@ -18,7 +19,13 @@ void manual();
 void pause_shell();
 void quit_shell();
 
-int main() {
+int main(int argc, char **argv, char **envp) {
+  // Set the shell environment variable to the full path of the myshell executable
+  char *shell_path = realpath(argv[0], NULL);
+  char *shell_var = malloc(strlen(shell_path) + 7);
+  sprintf(shell_var, "shell=%s", shell_path);
+  putenv(shell_var);
+
   char input[MAX_COMMAND_INPUT];
   char *args[MAX_COMMAND_INPUT];
   int num_args;
@@ -93,10 +100,32 @@ int main() {
       quit_shell();
     }
     else {
-      // External command, not implemented
-      printf("Command not implemented.\n");
+      // External command: fork and execute
+      int child_pid = fork();
+      if (child_pid == 0) {
+        // Set the parent environment variable to the shell path
+        char *parent_var = malloc(strlen("parent=") + strlen(getenv("shell")) + 1);
+        sprintf(parent_var, "parent=%s", getenv("shell"));
+        putenv(parent_var);
+
+        // Execute the program
+        execvp(args[0], args);
+
+        // Should not reach this line if execvp succeeds
+        printf("Unknown command: %s\n", args[0]);
+        exit(EXIT_FAILURE);
+      }
+      else if (child_pid > 0) {
+        waitpid(child_pid, NULL, 0);
+      }
+      else {
+        printf("Unable to fork child process.\n");
+      }
     }
   }
+
+  // Free dynamically allocated memory
+  free(shell_var);
 
   return 0;
 }
