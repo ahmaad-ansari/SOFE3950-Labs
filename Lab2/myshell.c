@@ -84,6 +84,14 @@ int main() {
       // Help command
       manual();
     }
+    else if (strcmp(args[0], "pause") == 0) {
+      // Run Pause command
+      pause_shell();
+    }
+    else if (strcmp(args[0], "quit") == 0) {
+      // Run Quit command
+      quit_shell();
+    }
     else {
       // External command, not implemented
       printf("Command not implemented.\n");
@@ -156,4 +164,12 @@ void manual() {
   fclose(fp);
 }
 
+void pause_shell() {
+  printf("Press Enter to continue...");
+  while (getchar() != '\n');
+}
 
+void quit_shell() {
+  printf("Goodbye!\n");
+  exit(EXIT_SUCCESS);
+}
