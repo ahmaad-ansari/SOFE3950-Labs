@@ -1,69 +1,67 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-// Function to handle the "cd" command
-void cd(char* directory){
-    char cwd[1024];
+#define MAX_INPUT 1024
 
-    // If no directory is provided, print the current working directory
-    if(directory == NULL){
-        if(getced(cwd, sizeof(cwd)) != NULL){
-            printf("Current directory: %s\n", cwd);
-        }
-        else{
-            perror("Error getting current directory");
-        }
+// Internal command functions
+void change_directory(char *directory);
+void clear_screen();
+
+int main() {
+  char input[MAX_INPUT];
+  char *args[MAX_INPUT];
+  int num_args;
+
+  while (1) {
+    printf("myshell> ");
+    if (fgets(input, MAX_INPUT, stdin) == NULL) {
+      printf("\n");
+      break;
     }
-    // Otherwise, try to change to the specified directory
-    else{
-        // Use the chdir function to change to the specified directory
-        if(chdir(directory) != 0){
-            perror("Error changineg directory")
-        }
-        else{
-            // Use the setenv function to update the PWD environment variable
-            setenv("PWD", directory, 1);
-        }
+
+    // Split input into arguments
+    num_args = 0;
+    args[num_args] = strtok(input, " \n");
+    while (args[num_args] != NULL) {
+      num_args++;
+      args[num_args] = strtok(NULL, " \n");
     }
+
+    if (num_args == 0) {
+      // Empty command, do nothing
+    } else if (strcmp(args[0], "cd") == 0) {
+      // Change directory command
+      if (num_args == 1) {
+        // Report current directory
+        printf("%s\n", getcwd(NULL, 0));
+      } else {
+        // Change directory
+        change_directory(args[1]);
+      }
+    } else if (strcmp(args[0], "clr") == 0) {
+      // Clear screen command
+      clear_screen();
+    } else {
+      // External command, not implemented
+      printf("Command not implemented.\n");
+    }
+  }
+
+  return 0;
 }
 
+void change_directory(char *directory) {
+  if (chdir(directory) != 0) {
+    printf("Directory not found.\n");
+  } else {
+    char *cwd = getcwd(NULL, 0);
+    setenv("PWD", cwd, 1);
+    free(cwd);
+  }
+}
 
-int main(){
-    char input[1024];
-    char *command, *arg;
-
-    // Loop forever, until the user types "exit"
-    while(1){
-        // Print the shell prompt
-        printf("myshell> ");
-        // Read a line of input from the user using fgets
-        if(fgets(input, 1024, stdin) == NULL){
-            break;
-        }
-        // Remove the newline character from the input
-        input[strlen(input - 1)] = '\0';
-
-        // Split the input into the command and argument parts using strtok
-        command = strtok(input, " ");
-        arg = strtok(NULL, " ");
-
-        // Check if the command is "cd"
-        if(strcmp(command, "cd") == 0){
-            // Call the cd function with the argument as input
-            cd(arg);
-        }
-        // Check if the command is "exit"
-        else if(strcmp(command, "exit") == 0){
-            // Exit the shell
-            break;
-        }
-        // If the command is not supported, print an error message
-        else{
-            printf("Command not supported\n");
-        }
-    }
-    // Exit the program
-    return 0;
+void clear_screen() {
+  printf("\033[2J\033[1;1H");
 }
