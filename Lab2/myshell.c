@@ -6,8 +6,8 @@
 #define MAX_INPUT 1024
 
 // Internal command functions
-void change_directory(char *directory);
-void clear_screen();
+void cd(char *directory);
+void clr();
 
 int main() {
   char input[MAX_INPUT];
@@ -31,19 +31,23 @@ int main() {
 
     if (num_args == 0) {
       // Empty command, do nothing
-    } else if (strcmp(args[0], "cd") == 0) {
+    }
+    else if (strcmp(args[0], "cd") == 0) {
       // Change directory command
       if (num_args == 1) {
         // Report current directory
         printf("%s\n", getcwd(NULL, 0));
-      } else {
-        // Change directory
-        change_directory(args[1]);
       }
-    } else if (strcmp(args[0], "clr") == 0) {
+      else {
+        // Change directory
+        cd(args[1]);
+      }
+    } 
+    else if (strcmp(args[0], "clr") == 0) {
       // Clear screen command
-      clear_screen();
-    } else {
+      clr();
+    }
+    else {
       // External command, not implemented
       printf("Command not implemented.\n");
     }
@@ -52,16 +56,17 @@ int main() {
   return 0;
 }
 
-void change_directory(char *directory) {
+void cd(char *directory) {
   if (chdir(directory) != 0) {
     printf("Directory not found.\n");
-  } else {
+  }
+  else {
     char *cwd = getcwd(NULL, 0);
     setenv("PWD", cwd, 1);
     free(cwd);
   }
 }
 
-void clear_screen() {
+void clr() {
   printf("\033[2J\033[1;1H");
 }
