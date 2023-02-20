@@ -129,7 +129,7 @@ void env() {
 }
 
 void manual() {
-  FILE *fp = fopen("readme.txt", "r");
+  FILE *fp = fopen("readme", "r");
   if (fp == NULL) {
     printf("Unable to open manual file.\n");
     return;
@@ -137,7 +137,7 @@ void manual() {
 
   // Use the more filter to display the contents of the manual file
   char command[MAX_COMMAND_INPUT];
-  sprintf(command, "more %s", "readme.txt");
+  sprintf(command, "more %s", "readme");
   FILE *pipe = popen(command, "r");
   if(pipe == NULL) {
     printf("Unable to start more filter.\n");
