@@ -4,12 +4,15 @@
 #include <unistd.h>
 #include <dirent.h>
 
+extern char **environ; // Declare the environment variable
+
 #define MAX_COMMAND_INPUT 1024
 
 // Internal command functions
 void cd(char *directory);
 void clr();
 void dir(char *directory);
+void env();
 
 int main() {
   char input[MAX_COMMAND_INPUT];
@@ -60,6 +63,10 @@ int main() {
         dir(args[1]);
       }
     }
+    else if (strcmp(args[0], "environ") == 0) {
+      // List environment variables
+      env();
+    }
     else {
       // External command, not implemented
       printf("Command not implemented.\n");
@@ -81,7 +88,7 @@ void cd(char *directory) {
 }
 
 void clr() {
-  printf("\033[2J\033[1;1H");
+  system("clear");
 }
 
 void dir(char *directory){
@@ -98,3 +105,10 @@ void dir(char *directory){
   }
 }
 
+void env() {
+  int i = 0;
+  while (environ[i] != NULL) {
+    printf("%s\n", environ[i]);
+    i++;
+  }
+}
