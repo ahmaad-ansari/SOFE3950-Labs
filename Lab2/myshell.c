@@ -1,9 +1,17 @@
+// Ahmaad Ansari    100785574
+// Hanzalah Patel   100785622
+// Waddah Saleh     100785692
+// Huzaifa Zia      100779087
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 extern char **environ; // Declare the environment variable
 
@@ -69,10 +77,19 @@ int main(int argc, char **argv, char **envp) {
     // Prompt the user for input and execute commands
     char input[MAX_COMMAND_INPUT];
     char *args[MAX_COMMAND_INPUT];
+    char cwd[MAX_COMMAND_INPUT];
+    char command[MAX_COMMAND_INPUT];
+
     int num_args;
 
     while (1) {
-      printf("myshell> ");
+      // Get the current working directory and format the prompt
+      if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("%s/myshell> ", cwd);
+      }
+      else {
+        printf("myshell> ");
+      }
       if (fgets(input, MAX_COMMAND_INPUT, stdin) == NULL) {
         printf("\n");
         break;
@@ -90,8 +107,6 @@ int main(int argc, char **argv, char **envp) {
 
     }
   }
-
-  
 
   // Free dynamically allocated memory
   free(shell_var);
