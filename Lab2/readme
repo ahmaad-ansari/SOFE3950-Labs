@@ -1,7 +1,67 @@
-The given code is an implementation of a simple shell in C language. It starts by including necessary header files, then defines some internal command functions, and finally implements the main function.
+User Manual for Shell Commands and Processes
 
-The internal command functions include cd, clr, dir, env, echo, manual, pause_shell, and quit_shell. These functions are responsible for executing commands such as changing directories, clearing the screen, listing directory contents, listing environment variables, echoing comments, displaying the manual, pausing the shell, and quitting the shell, respectively.
+Introduction:
+The shell is a command-line interface that allows users to interact with the operating system. This manual will explain the following shell commands and processes in depth, including the description of operation and commands, environment concepts, input/output (i/o) redirection, background execution, and overall layout and display of understanding.
 
-The main function begins by setting the shell environment variable to the full path of the myshell executable. If a command line argument is provided, the program reads commands from the file, otherwise, it prompts the user to input commands. It then splits the input into arguments and passes them to the execute_commands function to execute the appropriate command. The execute_commands function checks which command is entered by the user and executes it accordingly.
+Internal Commands:
+The shell supports the following internal commands:
+i. cd <directory> - Changes the current default directory to <directory>. If the <directory> argument is not present, the current directory is reported. If the directory does not exist, an appropriate error is reported. This command also changes the PWD environment variable.
 
-The program forks and executes external commands. If an internal command is entered, it calls the relevant function to execute the command. The program also frees dynamically allocated memory before terminating.
+ii. clr - Clears the screen.
+
+iii. dir <directory> - Lists the contents of directory <directory>.
+
+iv. environ - Lists all the environment strings.
+
+v. echo <comment> - Displays <comment> on the display followed by a new line. Multiple spaces/tabs may be reduced to a single space.
+
+vi. help - Displays the user manual using the more filter.
+
+vii. pause - Pauses operation of the shell until 'Enter' is pressed.
+
+viii. quit - Quits the shell.
+
+ix. The shell environment should contain shell=<pathname>/myshell, where <pathname>/myshell is the full path for the shell executable (not a hardwired path back to your directory, but the one from which it was executed).
+
+Program Invocation:
+All other command-line input is interpreted as program invocation, which should be done by the shell forking and execing the programs as its own child processes. The programs should be executed with an environment that contains the entry: parent=<pathname>/myshell, where <pathname>/myshell is as described in 1.ix. above.
+
+Batch File Processing:
+The shell must be able to take its command-line input from a file. If the shell is invoked with a command-line argument:
+
+myshell batchfile
+
+Then batchfile is assumed to contain a set of command lines for the shell to process. When the end-of-file is reached, the shell should exit. If the shell is invoked without a command-line argument, it solicits input from the user via a prompt on the display.
+
+I/O Redirection:
+The shell must support i/o redirection on either or both stdin and/or stdout. For example, the command line:
+
+programname arg1 arg2 < inputfile > outputfile
+
+Will execute the program programname with arguments arg1 and arg2, the stdin FILE stream replaced by inputfile, and the stdout FILE stream replaced by outputfile. Stdout redirection should also be possible for the internal commands: dir, environ, echo, & help.
+
+With output redirection, if the redirection character is >, then the outputfile is created if it does not exist and truncated if it does. If the redirection token is >>, then outputfile is created if it does not exist and appended to if it does.
+
+Background Execution:
+The shell must support background execution of programs. An ampersand (&) at the end of the command line indicates that the shell should return to the command line prompt immediately after launching that program.
+
+Command Line Prompt:
+The command line prompt must contain the pathname of the current directory.
+
+Description of Environment Concepts:
+The shell environment includes all variables, functions, and settings that are available to the shell and its child processes. These environment variables are typically used to configure system behavior and store information that can be shared across different programs.
+The PWD environment variable is used to store the current working directory of the shell, while the parent environment variable is used to store the full path to the shell executable. Other commonly used environment variables include PATH, which stores a list of directories that the shell searches when looking for executable files, and HOME, which stores the path to the user's home directory.
+
+Description of I/O Redirection:
+Input/output (I/O) redirection is a way to change where input comes from and where output goes to when running a program. The most common way to redirect output is to use the '>' or '>>' symbols to specify a file where the output should be sent. The '>' symbol will create a new file or overwrite an existing one, while the '>>' symbol will append to an existing file.
+For example, the command 'ls > file.txt' would send the output of the 'ls' command to a file named 'file.txt'. I/O redirection can also be used for input, using the '<' symbol to specify a file from which the program should read input. For example, the command 'sort < file.txt' would sort the contents of 'file.txt'.
+
+Description of Background Execution:
+Background execution allows a program to be run in the background, while the shell continues to accept commands and display output. To run a program in the background, simply add an '&' symbol at the end of the command line.
+For example, the command 'programname &' would launch 'programname' in the background, allowing the shell to continue accepting commands immediately after. Output from the program will still be displayed in the shell, but it will not be necessary to wait for the program to finish before entering additional commands.
+
+Overall Layout and Display of Understanding:
+The shell is a powerful tool for managing the operating system and launching programs. It supports a variety of internal commands, including changing directories, clearing the screen, listing directory contents, displaying environment variables, echoing text to the console, and pausing the shell.
+In addition to these internal commands, the shell can also launch external programs and redirect input and output to files. Background execution is also supported, allowing programs to run in the background while the shell continues to accept commands. The command prompt displays the current directory path, making it easy to keep track of the current location in the file system.
+
+Overall, the shell provides a flexible and powerful environment for managing the operating system and launching programs, making it an essential tool for any system administrator or power user.
