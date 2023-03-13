@@ -187,8 +187,8 @@ int main() {
     for (int i = 0; i < NUM_THREADS; i++) {
 
         if (!valid[i]) {
-
-            printf("The Sudoku is INVALID.\n");
+            print_board(sudoku);
+            printf("The Sudoku is \033[1;31mINVALID\033[0m\n");
             return 0;
 
         }
