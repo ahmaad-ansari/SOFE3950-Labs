@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#define NUM_THREADS 27// 9 threads for each column, 9 threads for each row, and 9 threads for each subgrid
+#define NUM_THREADS 11// 9 threads for each column, 9 threads for each row, and 9 threads for each subgrid
 #define SIZE 9 // Size of sudoku grid
 
 // Sample correct sudoku puzzle
@@ -97,7 +97,7 @@ void *checkColumn(void *params) {
 
 int main() {
 
-    pthread_t threads[NUM_THREADS];
+    pthread_t threads[27];
     int createThread;
 
     // Will create threads for each column
