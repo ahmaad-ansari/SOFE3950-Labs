@@ -95,6 +95,25 @@ void *checkColumn(void *params) {
     pthread_exit(NULL);
 }
 
+// Method to print sudoku board
+void print_board(int board[SIZE][SIZE]) {
+    printf("+-------+-------+-------+\n");
+    for (int i = 0; i < SIZE; i++) {
+        printf("| ");
+        for (int j = 0; j < SIZE; j++) {
+            printf("%d ", board[i][j]);
+            if ((j + 1) % 3 == 0) {
+                printf("| ");
+            }
+        }
+
+        printf("\n");
+        if ((i + 1) % 3 == 0) {
+            printf("+-------+-------+-------+\n");
+        }
+    }
+}
+
 int main() {
 
     pthread_t threads[27];
@@ -176,7 +195,8 @@ int main() {
 
     }
 
-    printf("The Sudoku is VALID\n");
+    print_board(sudoku);
+    printf("The Sudoku is \033[1;32mVALID\033[0m\n");
 
     return 0;
 }
